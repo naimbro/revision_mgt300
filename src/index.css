@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globales del juego */
+body {
+  @apply bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900;
+  @apply min-h-screen text-white;
+}
+
+/* Clases reutilizables */
+.dramatic-card {
+  @apply bg-slate-800/50 backdrop-blur-sm rounded-xl border border-blue-500/30 shadow-2xl;
+}
+
+.primary-button {
+  @apply bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.input-field {
+  @apply bg-slate-700/50 border border-blue-500/30 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50;
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent;
+}
+
+.progress-bar {
+  @apply h-2 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full transition-all duration-500;
+}
+
+/* Textarea mejorado */
+textarea.input-field {
+  @apply resize-none;
+}
