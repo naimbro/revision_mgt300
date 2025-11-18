@@ -218,7 +218,7 @@ export default function Round() {
           className="dramatic-card p-6 mb-6"
         >
           <h2 className="text-lg font-bold text-white mb-4">Jueces Evaluadores</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {judges.map((judge) => (
               <div key={judge.name} className="bg-slate-700/30 rounded-lg p-4 text-center">
                 <div className="text-4xl mb-2">{judge.avatar}</div>
