@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGame } from '../hooks/useGame';
-import { Loader, Home, FileText, Download } from 'lucide-react';
+import { Loader, Home, Download } from 'lucide-react';
 import { getMedalEmoji } from '../lib/gameLogic';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../lib/firebase';
