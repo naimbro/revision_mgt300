@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 
 // ----------------------------
@@ -176,13 +177,15 @@ async function callOpenAI(
 // Cloud Function: Evaluar respuesta con los 4 jueces
 // ----------------------------
 
-export const evaluateAnswer = functions.https.onCall(async (request: any) => {
+export const evaluateAnswer = onCall(
+  { secrets: ["OPENAI_API_KEY"] },
+  async (request) => {
     // Inicializar app y Firestore de forma segura
     const db = getDb();
 
     // Verificar autenticación
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "unauthenticated",
         "User must be authenticated"
       );
@@ -192,7 +195,7 @@ export const evaluateAnswer = functions.https.onCall(async (request: any) => {
       request.data || {};
 
     if (!gameCode || !roundNumber || !playerId || !answer || !questionText) {
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "invalid-argument",
         "Missing required parameters"
       );
@@ -249,23 +252,26 @@ export const evaluateAnswer = functions.https.onCall(async (request: any) => {
       };
     } catch (error: any) {
       console.error("Error in evaluateAnswer:", error);
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "internal",
         error?.message || "Error evaluating answer"
       );
     }
-  });
+  }
+);
 
 // ----------------------------
 // Cloud Function: Generar informe personalizado para un estudiante
 // ----------------------------
 
-export const generateReport = functions.https.onCall(async (request: any) => {
+export const generateReport = onCall(
+  { secrets: ["OPENAI_API_KEY"] },
+  async (request) => {
     const db = getDb();
 
     // Verificar autenticación
     if (!request.auth) {
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "unauthenticated",
         "User must be authenticated"
       );
@@ -274,7 +280,7 @@ export const generateReport = functions.https.onCall(async (request: any) => {
     const { gameCode, playerId } = request.data || {};
 
     if (!gameCode || !playerId) {
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "invalid-argument",
         "Missing required parameters"
       );
@@ -395,9 +401,10 @@ Devuelve SOLO un objeto JSON con:
       return report;
     } catch (error: any) {
       console.error("Error in generateReport:", error);
-      throw new functions.https.HttpsError(
+      throw new HttpsError(
         "internal",
         error?.message || "Error generating report"
       );
     }
-  });
+  }
+);
