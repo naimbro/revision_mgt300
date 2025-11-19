@@ -52,9 +52,6 @@ Devuelve SOLO un objeto JSON con esta estructura exacta:
 
 // Llamar a OpenAI para evaluación
 async function callOpenAI(prompt: string, answer: string, questionText: string): Promise<any> {
-  // Import fetch dynamically to avoid timeout during code analysis
-  const fetch = (await import('node-fetch')).default;
-
   const apiKey = getOpenAIKey();
 
   if (!apiKey) {
@@ -234,9 +231,6 @@ export const generateReport = functions.https.onCall(async (data, context) => {
 
     if (apiKey) {
       try {
-        // Import fetch dynamically to avoid timeout during code analysis
-        const fetch = (await import('node-fetch')).default;
-
         const recommendationPrompt = `Eres un asistente educativo. Basándote en el desempeño de un estudiante en MGT300 Unidad 2, genera 3-5 recomendaciones específicas de estudio.
 
 Conceptos fuertes: ${strongConcepts.join(', ')}
