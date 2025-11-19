@@ -172,7 +172,7 @@ export default function Lobby() {
               <p className="text-sm text-gray-400">Preguntas</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-cyan-400">3</p>
+              <p className="text-3xl font-bold text-cyan-400">4</p>
               <p className="text-sm text-gray-400">Jueces de IA</p>
             </div>
             <div>
