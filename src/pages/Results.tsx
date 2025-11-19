@@ -248,10 +248,24 @@ export default function Results() {
                           {player.uid === playerId && ' (Tú)'}
                         </span>
                         {player.rankChange > 0 && (
-                          <TrendingUp className="w-4 h-4 text-green-500" />
+                          <motion.div
+                            initial={{ y: 10, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="flex items-center gap-1 bg-green-500/20 px-2 py-1 rounded-full"
+                          >
+                            <TrendingUp className="w-4 h-4 text-green-400" />
+                            <span className="text-xs font-bold text-green-400">+{player.rankChange}</span>
+                          </motion.div>
                         )}
                         {player.rankChange < 0 && (
-                          <TrendingDown className="w-4 h-4 text-red-500" />
+                          <motion.div
+                            initial={{ y: -10, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="flex items-center gap-1 bg-red-500/20 px-2 py-1 rounded-full"
+                          >
+                            <TrendingDown className="w-4 h-4 text-red-400" />
+                            <span className="text-xs font-bold text-red-400">{player.rankChange}</span>
+                          </motion.div>
                         )}
                       </div>
                     </td>
