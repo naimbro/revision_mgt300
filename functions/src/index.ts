@@ -68,6 +68,8 @@ function getJudges(): Judge[] {
       role: "Evaluador conceptual y de profundidad",
       prompt: `Eres "Profe Naim", profesor de MGT300. Evalúas profundidad conceptual, rigor teórico y uso coherente de autores (Aghion, Acemoglu & Robinson, Steffen, Sen).
 
+IMPORTANTE: Usa la 'respuesta ideal' asociada a esta pregunta como gold standard interno para calibrar tu evaluación. No la cites ni la muestres al estudiante. Solo úsala como referencia de calidad esperada.
+
 Evalúa:
 1. Corrección del concepto central (destrucción creativa, instituciones inclusivas/extractivas, Great Gatsby Curve, Gran Aceleración, etc.)
 2. Si conecta el concepto con ideas clave del autor correspondiente
@@ -84,7 +86,11 @@ Devuelve SOLO un objeto JSON con esta estructura exacta:
     {
       name: "Ayudante Mariela",
       role: "Claridad, estructura y redacción",
-      prompt: `Eres "Ayudante Mariela", enfocada en claridad, estructura argumental y legibilidad. Evalúas:
+      prompt: `Eres "Ayudante Mariela", enfocada en claridad, estructura argumental y legibilidad.
+
+IMPORTANTE: Usa la 'respuesta ideal' como referencia interna de claridad y estructura deseada. No la reveles ni la cites directamente.
+
+Evalúas:
 1. Si presenta una idea central clara desde el inicio
 2. Si las ideas siguen flujo lógico (causa → consecuencia → ejemplo)
 3. Si los ejemplos ayudan a entender, no solo adornan
@@ -102,7 +108,11 @@ Devuelve SOLO un objeto JSON con esta estructura exacta:
     {
       name: "Ayudante Carlos",
       role: "Rigor y conexión con el curso",
-      prompt: `Eres "Ayudante Carlos", evaluador de rigor, uso preciso de conceptos y alineación con la literatura del curso. Evalúas:
+      prompt: `Eres "Ayudante Carlos", evaluador de rigor, uso preciso de conceptos y alineación con la literatura del curso.
+
+IMPORTANTE: Usa la 'respuesta ideal' para calibrar rigor conceptual. No la muestres ni la nombres directamente.
+
+Evalúas:
 1. Aplicación correcta de conceptos centrales: instituciones, incentivos, desigualdad, movilidad, innovación, Antropoceno
 2. Identificación de mecanismos causales (ej: incumbentes frenan innovación por riesgo de canibalización; instituciones extractivas reducen incentivos)
 3. Conexión explícita con discusiones de clase o lecturas
@@ -118,7 +128,11 @@ Devuelve SOLO un objeto JSON con esta estructura exacta:
     {
       name: "Ayudante Max",
       role: "Especialista en síntesis creativa",
-      prompt: `Eres "Ayudante Max", especialista en síntesis creativa. Evalúas:
+      prompt: `Eres "Ayudante Max", especialista en síntesis creativa.
+
+IMPORTANTE: Usa la 'respuesta ideal' solo como punto de referencia mínima; tú evalúas creatividad adicional que vaya más allá del estándar. No la reveles directamente.
+
+Evalúas:
 1. Conexiones conceptuales inesperadas pero correctas (ej: Gran Aceleración + instituciones extractivas + incentivos a innovación verde)
 2. Integración de ideas de distintos autores y campos
 3. Pensamiento lateral sin inventar evidencia
@@ -143,12 +157,20 @@ Devuelve SOLO un objeto JSON con esta estructura exacta:
 async function callOpenAI(
   prompt: string,
   answer: string,
-  questionText: string
+  questionText: string,
+  idealAnswer?: string
 ): Promise<any> {
   const apiKey = getOpenAIKey();
 
   if (!apiKey) {
     throw new Error("OpenAI API key not configured");
+  }
+
+  // Construir el contenido del usuario con respuesta ideal si existe
+  let userContent = `Pregunta: ${questionText}\n\nRespuesta del estudiante: ${answer}`;
+
+  if (idealAnswer) {
+    userContent += `\n\nRespuesta ideal (para referencia interna, NO la reveles ni la cites directamente): ${idealAnswer}`;
   }
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -166,7 +188,7 @@ async function callOpenAI(
         },
         {
           role: "user",
-          content: `Pregunta: ${questionText}\n\nRespuesta del estudiante: ${answer}`,
+          content: userContent,
         },
       ],
       response_format: { type: "json_object" },
@@ -203,7 +225,7 @@ export const evaluateAnswer = onCall(
       );
     }
 
-    const { gameCode, roundNumber, playerId, answer, questionText } =
+    const { gameCode, roundNumber, playerId, answer, questionText, idealAnswer } =
       request.data || {};
 
     if (!gameCode || !roundNumber || !playerId || !answer || !questionText) {
@@ -221,7 +243,8 @@ export const evaluateAnswer = onCall(
             const result = await callOpenAI(
               judge.prompt,
               answer,
-              questionText
+              questionText,
+              idealAnswer
             );
             return {
               judgeName: judge.name,

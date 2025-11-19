@@ -72,7 +72,8 @@ export default function Round() {
         roundNumber: currentRound,
         playerId,
         answer: answer.trim(),
-        questionText: question?.text
+        questionText: question?.text,
+        idealAnswer: question?.idealAnswer
       });
 
       setHasSubmitted(true);

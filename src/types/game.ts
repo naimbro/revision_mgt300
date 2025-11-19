@@ -71,6 +71,7 @@ export interface Question {
   theme: 'A' | 'B' | 'C' | 'D'; // A: Destrucción creativa, B: Desigualdad, C: Instituciones, D: Antropoceno
   expectedConcepts?: string[];
   difficulty?: 'easy' | 'medium' | 'hard';
+  idealAnswer?: string; // Respuesta ideal para que los jueces la usen como referencia
 }
 
 export interface Judge {
