@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 
@@ -25,25 +24,12 @@ function getDb() {
 // ----------------------------
 
 function getOpenAIKey(): string {
-  // 1) Primero intentamos con variables de entorno (recomendado en v7)
+  // En v2, solo usar variables de entorno (inyectadas por secrets)
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim() !== "") {
     return process.env.OPENAI_API_KEY.trim();
   }
 
-  // 2) Intentamos compat con functions.config() SI existe
-  try {
-    const anyFunctions: any = functions as any;
-    if (typeof anyFunctions.config === "function") {
-      const cfg = anyFunctions.config();
-      if (cfg?.openai?.key && typeof cfg.openai.key === "string") {
-        return cfg.openai.key;
-      }
-    }
-  } catch (e) {
-    // No hacemos nada: en deploy / discovery puede no estar disponible
-  }
-
-  // 3) Fallback: sin clave -> devolvemos string vacío (el caller maneja el error)
+  // Si no hay clave, devolver string vacío (el caller maneja el error)
   return "";
 }
 
@@ -212,7 +198,6 @@ async function callOpenAI(
 // ----------------------------
 
 export const evaluateAnswer = onCall(
-  { secrets: ["OPENAI_API_KEY"] },
   async (request) => {
     // Inicializar app y Firestore de forma segura
     const db = getDb();
@@ -300,7 +285,6 @@ export const evaluateAnswer = onCall(
 // ----------------------------
 
 export const generateReport = onCall(
-  { secrets: ["OPENAI_API_KEY"] },
   async (request) => {
     const db = getDb();
 
