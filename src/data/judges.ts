@@ -21,6 +21,13 @@ export const judges: Judge[] = [
     description: 'Enfoque institucional-político, incentivos, poder, trayectoria histórica',
     avatar: '👨‍💼',
     color: 'emerald'
+  },
+  {
+    name: 'Ayudante Max',
+    role: 'Especialista en Síntesis Creativa',
+    description: 'Conexiones conceptuales, integración de ideas, pensamiento lateral',
+    avatar: '🧠',
+    color: 'amber'
   }
 ];
 
